@@ -20,4 +20,20 @@ public class PeekIteratorTest {
         assertEquals('h', peekIterator.next());
         assertEquals('a', peekIterator.next());
     }
+
+    @Test
+    public void test_lookahead2() {
+        String source = "abcdef";
+        PeekIterator<Character> peekIterator = new PeekIterator<>(source.chars().mapToObj(c -> (char)c));
+        assertEquals('a', peekIterator.next());
+        assertEquals('b', peekIterator.next());
+        assertEquals('c', peekIterator.next());
+
+        peekIterator.putBack();
+        peekIterator.putBack();
+
+        assertEquals('b', peekIterator.next());
+        assertEquals('c', peekIterator.next());
+
+    }
 }
