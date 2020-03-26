@@ -1,0 +1,15 @@
+.DS_Store
+.idea/
+.vscode
+.gradle/
+build/
+out/
+target/
+*.iml
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
