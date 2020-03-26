@@ -10,7 +10,16 @@ public class PeekIterator<T> implements Iterator<T> {
     private LinkedList<T> queueCache;
     private LinkedList<T> stackPutBack;
 
+    private T _endToken = null;
+
     public PeekIterator(Stream<T> stream) {
+        iterator = stream.iterator();
+        queueCache = new LinkedList<>();
+        stackPutBack = new LinkedList<>();
+    }
+
+    public PeekIterator(Stream<T> stream, T endToken) {
+        _endToken = endToken;
         iterator = stream.iterator();
         queueCache = new LinkedList<>();
         stackPutBack = new LinkedList<>();
@@ -22,7 +31,7 @@ public class PeekIterator<T> implements Iterator<T> {
             return this.stackPutBack.getFirst();
         }
         if (!iterator.hasNext()) {
-            return null;
+            return _endToken;
         }
         T val = next();
         this.putBack();
@@ -44,7 +53,7 @@ public class PeekIterator<T> implements Iterator<T> {
     @Override
     public boolean hasNext() {
         // putBack栈里有元素或者流中有元素
-        return stackPutBack.size() > 0 || iterator.hasNext();
+        return _endToken != null || stackPutBack.size() > 0 || iterator.hasNext();
     }
 
     @Override
@@ -54,6 +63,11 @@ public class PeekIterator<T> implements Iterator<T> {
         if (stackPutBack.size() > 0) {
             val = stackPutBack.pop();
         } else {
+            if(!iterator.hasNext()) {
+                T temp =  _endToken;
+                _endToken = null;
+                return temp;
+            }
             val = iterator.next();
         }
         // 当缓存大于最大缓存 - 1时，把链表第一个元素（最先入队缓存的）移除，把位置留给next要拿出的元素
