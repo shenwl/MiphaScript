@@ -26,6 +26,5 @@ public class TokenTest {
 
         Token token3 = Token.makeVarOrKeyword(it1);
         assertToken(token3, "abc", TokenType.VARIABLE);
-
     }
 }
