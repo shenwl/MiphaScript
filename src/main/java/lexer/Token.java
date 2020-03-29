@@ -206,6 +206,90 @@ public class Token {
         throw new LexicalException("Unexpected  error");
     }
 
+    public static Token makeNumber(PeekIterator<Character> iterator) throws LexicalException {
+        StringBuilder s = new StringBuilder();
+        int state = 0;
+        while (iterator.hasNext()) {
+            char lookahead = iterator.peek();
+
+            switch (state) {
+                case 0:
+                    if (lookahead == '0') {
+                        state = 1;
+                    } else if (AlphabetHelper.isNumber(lookahead)) {
+                        state = 2;
+                    } else if (lookahead == '+' || lookahead == '-') {
+                        state = 3;
+                    } else if (lookahead == '.') {
+                        state = 4;
+                    }
+                    break;
+                // 0 开头
+                case 1:
+                    if (lookahead == '0') {
+                        state = 1;
+                    } else if (AlphabetHelper.isNumber(lookahead)) {
+                        state = 2;
+                    } else if (lookahead == '.') {
+                        state = 4;
+                    } else {
+                        return new Token(TokenType.INTEGER, s.toString());
+                    }
+                    break;
+                // 1-9开头
+                case 2:
+                    if (AlphabetHelper.isNumber(lookahead)) {
+                        state = 2;
+                    } else if (lookahead == '.') {
+                        state = 4;
+                    } else {
+                        return new Token(TokenType.INTEGER, s.toString());
+                    }
+                    break;
+                // +-号开头
+                case 3:
+                    if (AlphabetHelper.isNumber(lookahead)) {
+                        state = 2;
+                    } else if (lookahead == '.') {
+                        state = 5;
+                    } else {
+                        throw new LexicalException(lookahead);
+                    }
+                    break;
+                // 处理float
+                case 4:
+                    if (lookahead == '.') {
+                        throw new LexicalException(lookahead);
+                    } else if (AlphabetHelper.isNumber(lookahead)) {
+                        state = 20;
+                    } else {
+                        return new Token(TokenType.FLOAT, s.toString());
+                    }
+                    break;
+                // 处理+-号开头浮点数
+                case 5:
+                    if (AlphabetHelper.isNumber(lookahead)) {
+                        state = 20;
+                    } else {
+                        throw new LexicalException(lookahead);
+                    }
+                    break;
+                case 20:
+                    if (AlphabetHelper.isNumber(lookahead)) {
+                        state = 20;
+                    } else if (lookahead == '.') {
+                        throw new LexicalException(lookahead);
+                    } else {
+                        return new Token(TokenType.FLOAT, s.toString());
+                    }
+            }
+            // end switch
+            iterator.next();
+            s.append(lookahead);
+        }
+        throw new LexicalException("Unexpected error");
+    }
+
     public Token(TokenType _type, String _value) {
         this._type = _type;
         this._value = _value;

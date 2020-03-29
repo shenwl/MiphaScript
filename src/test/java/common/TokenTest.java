@@ -74,4 +74,28 @@ public class TokenTest {
             assertToken(token, results[i++], TokenType.OPERATOR);
         }
     }
+
+    @Test
+    public void test_makeNumber() throws LexicalException {
+        String[] tests = {
+                "+0 aa",
+                "-0 hello",
+                ".3 ddd",
+                ".556 al",
+                "1234.556 cc",
+                "-1234.556 hello",
+                "-1000 world",
+        };
+
+        String[] resultValues = {"+0", "-0", ".3", ".556", "1234.556", "-1234.556", "-1000"};
+        TokenType[] resultTypes = {TokenType.INTEGER, TokenType.INTEGER, TokenType.FLOAT,
+                TokenType.FLOAT, TokenType.FLOAT, TokenType.FLOAT, TokenType.INTEGER};
+
+        int i = 0;
+        for (String test : tests) {
+            PeekIterator<Character> it = new PeekIterator<>(test.chars().mapToObj(c -> (char) c));
+            Token token = Token.makeNumber(it);
+            assertToken(token, resultValues[i], resultTypes[i++]);
+        }
+    }
 }
