@@ -2,6 +2,7 @@ package lexer;
 
 import common.AlphabetHelper;
 import common.PeekIterator;
+import exceptions.LexicalException;
 
 public class Token {
     TokenType _type;
@@ -9,15 +10,16 @@ public class Token {
 
     /**
      * 提取变量或关键字
+     *
      * @param iterator
      * @return
      */
     public static Token makeVarOrKeyword(PeekIterator<Character> iterator) {
         String s = "";
 
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             char lookahead = iterator.peek();
-            if(AlphabetHelper.isLiteral(lookahead)) {
+            if (AlphabetHelper.isLiteral(lookahead)) {
                 s += lookahead;
             } else {
                 break;
@@ -26,13 +28,182 @@ public class Token {
             iterator.next();
         }
         // 判断关键词
-        if(Keywords.isKeyword(s)) {
+        if (Keywords.isKeyword(s)) {
             return new Token(TokenType.KEYWORD, s);
         }
-        if(s.equals("true") || s.equals("false")) {
+        if (s.equals("true") || s.equals("false")) {
             return new Token(TokenType.BOOLEAN, s);
         }
         return new Token(TokenType.VARIABLE, s);
+    }
+
+    public static Token makeString(PeekIterator<Character> iterator) throws LexicalException {
+        StringBuilder s = new StringBuilder();
+        int state = 0;
+
+        while (iterator.hasNext()) {
+            char c = iterator.next();
+            // 状态机 0 -> 1 or 2 -> 在状态1或状态2循环 -> 到达条件，终止 -> result
+            switch (state) {
+                case 0:
+                    if (c == '"') {
+                        state = 1;
+                    } else {
+                        state = 2;
+                    }
+                    s.append(c);
+                    break;
+                case 1:
+                    if (c == '"') {
+                        return new Token(TokenType.STRING, s.toString() + c);
+                    } else {
+                        s.append(c);
+                    }
+                    break;
+                case 2:
+                    if (c == '\'') {
+                        return new Token(TokenType.STRING, s.toString() + c);
+                    } else {
+                        s.append(c);
+                    }
+                    break;
+            }
+        }
+
+        throw new LexicalException("Unexpected  error");
+    }
+
+    public static Token makeOperator(PeekIterator<Character> iterator) throws LexicalException {
+        StringBuilder s = new StringBuilder();
+        int state = 0;
+
+        while (iterator.hasNext()) {
+            char lookahead = iterator.next();
+            switch (state) {
+                case 0:
+                    switch (lookahead) {
+                        case '+':
+                            state = 1;
+                            break;
+                        case '-':
+                            state = 2;
+                            break;
+                        case '*':
+                            state = 3;
+                            break;
+                        case '/':
+                            state = 4;
+                            break;
+                        case '>':
+                            state = 5;
+                            break;
+                        case '<':
+                            state = 6;
+                            break;
+                        case '=':
+                            state = 7;
+                            break;
+                        case '!':
+                            state = 8;
+                            break;
+                        case '&':
+                            state = 9;
+                            break;
+                        case '|':
+                            state = 10;
+                            break;
+                        case '%':
+                            state = 11;
+                            break;
+                        case '^':
+                            return new Token(TokenType.OPERATOR, "^");
+                        case ',':
+                            return new Token(TokenType.OPERATOR, ",");
+                        case ';':
+                            return new Token(TokenType.OPERATOR, ";");
+                    }
+                    break;
+                case 1:
+                    if (lookahead == '+') {
+                        return new Token(TokenType.OPERATOR, "++");
+                    }
+                    if (lookahead == '=') {
+                        return new Token(TokenType.OPERATOR, "+=");
+                    }
+                    iterator.putBack();
+                    return new Token(TokenType.OPERATOR, "+");
+                case 2:
+                    if (lookahead == '-') {
+                        return new Token(TokenType.OPERATOR, "--");
+                    }
+                    if (lookahead == '=') {
+                        return new Token(TokenType.OPERATOR, "-=");
+                    }
+                    iterator.putBack();
+                    return new Token(TokenType.OPERATOR, "-");
+                case 3:
+                    if (lookahead == '=') {
+                        return new Token(TokenType.OPERATOR, "*=");
+                    }
+                    iterator.putBack();
+                    return new Token(TokenType.OPERATOR, "*");
+                case 4:
+                    if (lookahead == '=') {
+                        return new Token(TokenType.OPERATOR, "/=");
+                    }
+                    iterator.putBack();
+                    return new Token(TokenType.OPERATOR, "/");
+                case 5:
+                    if (lookahead == '=') {
+                        return new Token(TokenType.OPERATOR, ">=");
+                    }
+                    if (lookahead == '>') {
+                        return new Token(TokenType.OPERATOR, ">>");
+                    }
+                    iterator.putBack();
+                    return new Token(TokenType.OPERATOR, ">");
+                case 6:
+                    if (lookahead == '=') {
+                        return new Token(TokenType.OPERATOR, "<=");
+                    }
+                    if (lookahead == '<') {
+                        return new Token(TokenType.OPERATOR, "<<");
+                    }
+                    iterator.putBack();
+                    return new Token(TokenType.OPERATOR, "<");
+                case 7:
+                    if (lookahead == '=') {
+                        return new Token(TokenType.OPERATOR, "==");
+                    }
+                    iterator.putBack();
+                    return new Token(TokenType.OPERATOR, "==");
+                case 8:
+                    if (lookahead == '=') {
+                        return new Token(TokenType.OPERATOR, "!=");
+                    }
+                    iterator.putBack();
+                    return new Token(TokenType.OPERATOR, "!");
+                case 9:
+                    if (lookahead == '&') {
+                        return new Token(TokenType.OPERATOR, "&&");
+                    }
+                    iterator.putBack();
+                    return new Token(TokenType.OPERATOR, "&");
+                case 10:
+                    if (lookahead == '|') {
+                        return new Token(TokenType.OPERATOR, "||");
+                    }
+                    iterator.putBack();
+                    return new Token(TokenType.OPERATOR, "|");
+                case 11:
+                    if (lookahead == '=') {
+                        return new Token(TokenType.OPERATOR, "%=");
+                    }
+                    iterator.putBack();
+                    return new Token(TokenType.OPERATOR, "%");
+            }
+        }
+        throw new LexicalException("Unexpected  error");
     }
 
     public Token(TokenType _type, String _value) {
@@ -55,6 +226,7 @@ public class Token {
 
     /**
      * token是否为变量
+     *
      * @return bool
      */
     public boolean isVariable() {
@@ -63,6 +235,7 @@ public class Token {
 
     /**
      * token是否为值类型
+     *
      * @return bool
      */
     public boolean isScalar() {
