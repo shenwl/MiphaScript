@@ -6,7 +6,7 @@ public class AlphabetHelper {
     static Pattern letterPattern = Pattern.compile("^[a-zA-Z]$");
     static Pattern numberPattern = Pattern.compile("^[0-9]$");
     static Pattern literalPattern = Pattern.compile("^[_a-zA-Z0-9]$");
-    static Pattern operatorPattern = Pattern.compile("^[+\\\\*\\-/<>=!&|^%]$");
+    static Pattern operatorPattern = Pattern.compile("^[+\\\\*\\-/<>=!&|^%,]$");
 
     public static boolean isLetter(char c) {
         return letterPattern.matcher(c + "").matches();
