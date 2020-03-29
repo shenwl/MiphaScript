@@ -326,4 +326,12 @@ public class Token {
         return _type == TokenType.INTEGER || _type == TokenType.FLOAT
                 || _type == TokenType.STRING || _type == TokenType.BOOLEAN;
     }
+
+    public boolean isNumber() {
+        return _type == TokenType.INTEGER || _type == TokenType.FLOAT;
+    }
+
+    public boolean isOperator() {
+        return _type == TokenType.OPERATOR;
+    }
 }
