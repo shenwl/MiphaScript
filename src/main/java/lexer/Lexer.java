@@ -8,6 +8,29 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class Lexer {
+    private static void removeComment(PeekIterator<Character> iterator, char lookahead) throws LexicalException {
+        if (lookahead == '/') {
+            while (iterator.hasNext()) {
+                char p = iterator.next();
+                if (p == '\n') {
+                    break;
+                }
+            }
+        } else if (lookahead == '*') {
+            boolean valid = false; // 检查是否闭合
+            while (iterator.hasNext()) {
+                char p = iterator.next();
+                if (p == '*' && iterator.peek() == '/') {
+                    iterator.next();
+                    valid = true;
+                    break;
+                }
+            }
+            if(!valid) {
+                throw new LexicalException("comments not match");
+            }
+        }
+    }
     /**
      * 分析源码文本流，产生Token
      *
@@ -31,29 +54,10 @@ public class Lexer {
             if (c == ' ' || c == '\n') {
                 continue;
             }
+
             // 删除注释
             if (c == '/') {
-                if (lookahead == '/') {
-                    while (iterator.hasNext()) {
-                        c = iterator.next();
-                        if (c == '\n') {
-                            break;
-                        }
-                    }
-                } else if (lookahead == '*') {
-                    boolean valid = false; // 检查是否闭合
-                    while (iterator.hasNext()) {
-                        char p = iterator.next();
-                        if (p == '*' && iterator.peek() == '/') {
-                            iterator.next();
-                            valid = true;
-                            break;
-                        }
-                    }
-                    if(!valid) {
-                        throw new LexicalException("comments not match");
-                    }
-                }
+                removeComment(iterator, lookahead);
                 continue;
             }
 
