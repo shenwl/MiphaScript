@@ -31,6 +31,32 @@ public class Lexer {
             if (c == ' ' || c == '\n') {
                 continue;
             }
+            // 删除注释
+            if (c == '/') {
+                if (lookahead == '/') {
+                    while (iterator.hasNext()) {
+                        c = iterator.next();
+                        if (c == '\n') {
+                            break;
+                        }
+                    }
+                } else if (lookahead == '*') {
+                    boolean valid = false; // 检查是否闭合
+                    while (iterator.hasNext()) {
+                        char p = iterator.next();
+                        if (p == '*' && iterator.peek() == '/') {
+                            iterator.next();
+                            valid = true;
+                            break;
+                        }
+                    }
+                    if(!valid) {
+                        throw new LexicalException("comments not match");
+                    }
+                }
+                continue;
+            }
+
             // 现在状态机没有涉及的符号
             if (c == '{' || c == '}' || c == '(' || c == ')') {
                 tokens.add(new Token(TokenType.BRACKET, c + ""));
@@ -65,7 +91,7 @@ public class Lexer {
                 }
             }
             // 操作符
-            if(AlphabetHelper.isOperator(c)) {
+            if (AlphabetHelper.isOperator(c)) {
                 iterator.putBack();
                 tokens.add(Token.makeOperator(iterator));
                 continue;
