@@ -1,4 +1,4 @@
-package parser;
+package parser.ast;
 
 public class Scalar extends Factor {
     public Scalar(ASTNode parent) {

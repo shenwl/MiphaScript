@@ -1,4 +1,4 @@
-package parser;
+package parser.ast;
 
 public class Blocker extends Stmt {
     public Blocker(ASTNode parent) {
