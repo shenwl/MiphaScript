@@ -36,6 +36,26 @@ public abstract class ASTNode {
         return lexeme;
     }
 
+    public void setLexeme(Token lexeme) {
+        this.lexeme = lexeme;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public ASTNodeTypes getType() {
+        return type;
+    }
+
+    public void setType(ASTNodeTypes type) {
+        this.type = type;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public ArrayList<ASTNode> getChildren() {
         return children;
     }
