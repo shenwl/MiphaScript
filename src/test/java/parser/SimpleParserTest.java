@@ -22,7 +22,11 @@ public class SimpleParserTest {
         PeekTokenIterator it = new PeekTokenIterator(lexer.analyse(source).stream());
         ASTNode expr = SimpleParser.parse(it);
 
-        // 有两个子树
+        // 树的构造：
+        //      +
+        //   1      +
+        //        2    +
+        //           3   4
         assertEquals(2, expr.getChildren().size());
         Scalar v1 = (Scalar)expr.getChild(0);
         assertEquals("1", v1.getLexeme().getValue());
