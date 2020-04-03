@@ -21,7 +21,7 @@ public class Expr extends ASTNode {
     }
 
     // 左递归：E(k) -> E(k) op(k) E(k+1) | E(k+1)
-    // 又递归：E(k) -> E(k+1) E_(k) // Expr e = new Expr; e.left = E(k+1); e.op = op(k); e.right = E(k+1) E_(k)
+    // 又递归：E(k) -> E(k+1) E_(k)  // Expr e = new Expr; e.left = E(k+1); e.op = op(k); e.right = E(k+1) E_(k)
     //       E_(k) -> op(k) E(k+1) E_(k) | ε
     private static ASTNode E(ASTNode parent, PeekTokenIterator it, int k) throws ParserException {
         if (k < table.size() - 1) {
@@ -93,6 +93,8 @@ public class Expr extends ASTNode {
         return bFunc.hoc();
     }
 
+    // E(k) -> E(k+1) E_(k)解决的逻辑
+    // E(k+1)为null时返回E_(k)，E(k+1)不为nullE_(k)为null时，返回E(k+1)，都不为null时返回一个Expr
     private static ASTNode combine(ASTNode parent, PeekTokenIterator it, ExprHOF aFunc, ExprHOF bFunc) throws ParserException {
         ASTNode a = aFunc.hoc();
         ASTNode b = bFunc.hoc();
