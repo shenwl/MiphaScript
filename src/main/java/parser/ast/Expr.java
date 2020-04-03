@@ -40,7 +40,7 @@ public class Expr extends ASTNode {
     // 解析因子
     private static ASTNode F(ASTNode parent, PeekTokenIterator it) {
         Token token = it.peek();
-        if(token.isVariable()) {
+        if (token.isVariable()) {
             return new Variable(parent, it);
         }
         return new Scalar(parent, it);
@@ -51,13 +51,13 @@ public class Expr extends ASTNode {
         Token token = it.peek();
         String value = token.getValue();
 
-        if(value.equals(("("))) {
+        if (value.equals(("("))) {
             it.nextMatch("(");
             ASTNode expr = E(parent, it, 0);
             it.nextMatch(")");
             return expr;
         }
-        if(value.equals("++") || value.equals("--") || value.equals("!")) {
+        if (value.equals("++") || value.equals("--") || value.equals("!")) {
             Token t = it.peek();
             it.nextMatch(value);
             Expr unaryExpr = new Expr(parent, ASTNodeTypes.UNARY_EXPR, t);
@@ -111,5 +111,9 @@ public class Expr extends ASTNode {
         expr.addChild(a);
         expr.addChild(b.getChild(1));
         return expr;
+    }
+
+    public static ASTNode parse(PeekTokenIterator it) throws ParserException {
+        return E(null, it, 0);
     }
 }
