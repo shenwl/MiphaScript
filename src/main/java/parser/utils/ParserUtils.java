@@ -1,7 +1,6 @@
 package parser.utils;
 
 import parser.ast.ASTNode;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class ParserUtils {
     public static String toPostfixExpression(ASTNode node) {
@@ -18,6 +17,6 @@ public class ParserUtils {
             case SCALAR:
                 return node.getLexeme().getValue();
         }
-        throw new NotImplementedException();
+        throw new RuntimeException("toPostfixExpression Exception: not impl");
     }
 }

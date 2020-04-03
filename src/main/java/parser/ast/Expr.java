@@ -97,19 +97,16 @@ public class Expr extends ASTNode {
     // E(k+1)为null时返回E_(k)，E(k+1)不为nullE_(k)为null时，返回E(k+1)，都不为null时返回一个Expr
     private static ASTNode combine(ASTNode parent, PeekTokenIterator it, ExprHOF aFunc, ExprHOF bFunc) throws ParserException {
         ASTNode a = aFunc.hoc();
-        ASTNode b = bFunc.hoc();
         if (a == null) {
-            if (it.hasNext()) {
-                return b;
-            }
-            return null;
+            return it.hasNext() ? bFunc.hoc() : null;
         }
+        ASTNode b = it.hasNext() ? bFunc.hoc() : null;
         if (b == null) {
             return a;
         }
         Expr expr = new Expr(parent, ASTNodeTypes.BINARY_EXPR, b.lexeme);
         expr.addChild(a);
-        expr.addChild(b.getChild(1));
+        expr.addChild(b.getChild(0));
         return expr;
     }
 
