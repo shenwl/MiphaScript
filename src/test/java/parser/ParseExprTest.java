@@ -27,4 +27,10 @@ public class ParseExprTest {
         ASTNode expr = createExpr("1+1+1");
         assertEquals("1 1 1 + +", ParserUtils.toPostfixExpression(expr));
     }
+
+    @Test
+    public void simple1() throws LexicalException, ParserException {
+        ASTNode expr = createExpr("\"1\" == \"\"");
+        assertEquals("\"1\" \"\" ==", ParserUtils.toPostfixExpression(expr));
+    }
 }
