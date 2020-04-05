@@ -14,6 +14,9 @@ public abstract class ASTNode {
     protected String label;         // 标签（备注）
     protected ASTNodeTypes type;    // 类型
 
+    // 类型
+    protected Token typeLexeme;
+
     public ASTNode(ASTNode parent) {
         this.parent = parent;
     }
@@ -58,5 +61,13 @@ public abstract class ASTNode {
 
     public ArrayList<ASTNode> getChildren() {
         return children;
+    }
+
+    public Token getTypeLexeme() {
+        return typeLexeme;
+    }
+
+    public void setTypeLexeme(Token typeLexeme) {
+        this.typeLexeme = typeLexeme;
     }
 }
