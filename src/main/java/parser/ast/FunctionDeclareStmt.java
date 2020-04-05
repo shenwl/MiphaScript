@@ -15,7 +15,7 @@ public class FunctionDeclareStmt extends Stmt {
 
         FunctionDeclareStmt func = new FunctionDeclareStmt(parent);
         Token lexeme = it.peek();
-        // 解析函数名次
+        // 解析函数名变量
         Variable functionVariable = (Variable)Factor.parse(parent, it);
 
         func.setLexeme(lexeme);
