@@ -24,6 +24,10 @@ public class Expr extends ASTNode {
         return E(null, it, 0);
     }
 
+    public static ASTNode parse(ASTNode parent, PeekTokenIterator it) throws ParserException {
+        return E(parent, it, 0);
+    }
+
     // 左递归：E(k) -> E(k) op(k) E(k+1) | E(k+1)
     // 又递归：E(k) -> E(k+1) E_(k)  // Expr e = new Expr; e.left = E(k+1); e.op = op(k); e.right = E(k+1) E_(k)
     //       E_(k) -> op(k) E(k+1) E_(k) | ε
@@ -60,9 +64,9 @@ public class Expr extends ASTNode {
     private static ASTNode F(ASTNode parent, PeekTokenIterator it) {
         Token token = it.peek();
         if (token.isVariable()) {
-            return new Variable(parent, it);
+            return new Variable(parent, it.next());
         }
-        return new Scalar(parent, it);
+        return new Scalar(parent, it.next());
     }
 
     // 解析一元表达式
