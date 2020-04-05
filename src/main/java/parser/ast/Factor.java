@@ -13,12 +13,11 @@ public abstract class Factor extends ASTNode {
 
     public static ASTNode parse(ASTNode parent, PeekTokenIterator it) {
         Token token = it.peek();
-        TokenType type = token.getType();
 
-        if(type == TokenType.VARIABLE) {
+        if (token.isVariable()) {
             it.next();
             return new Variable(parent, token);
-        } else if(token.isScalar()) {
+        } else if (token.isScalar()) {
             it.next();
             return new Scalar(parent, token);
         }
