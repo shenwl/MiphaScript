@@ -176,7 +176,7 @@ public class Token {
                         return new Token(TokenType.OPERATOR, "==");
                     }
                     iterator.putBack();
-                    return new Token(TokenType.OPERATOR, "==");
+                    return new Token(TokenType.OPERATOR, "=");
                 case 8:
                     if (lookahead == '=') {
                         return new Token(TokenType.OPERATOR, "!=");
