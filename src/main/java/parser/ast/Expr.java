@@ -20,6 +20,10 @@ public class Expr extends ASTNode {
         this.lexeme = lexeme;
     }
 
+    public static ASTNode parse(PeekTokenIterator it) throws ParserException {
+        return E(null, it, 0);
+    }
+
     // 左递归：E(k) -> E(k) op(k) E(k+1) | E(k+1)
     // 又递归：E(k) -> E(k+1) E_(k)  // Expr e = new Expr; e.left = E(k+1); e.op = op(k); e.right = E(k+1) E_(k)
     //       E_(k) -> op(k) E(k+1) E_(k) | ε
@@ -35,6 +39,21 @@ public class Expr extends ASTNode {
                 () -> combine(parent, it, () -> F(parent, it), () -> E_(parent, it, k)),
                 it
         );
+    }
+
+    private static ASTNode E_(ASTNode parent, PeekTokenIterator it, int k) throws ParserException {
+        Token token = it.peek();
+        String value = token.getValue();
+
+        if (table.get(k).indexOf(value) != -1) {
+            Expr expr = new Expr(parent, ASTNodeTypes.BINARY_EXPR, it.nextMatch(value));
+            expr.addChild(combine(parent, it,
+                    () -> E(parent, it, k),
+                    () -> E_(parent, it, k)
+            ));
+            return expr;
+        }
+        return null;
     }
 
     // 解析因子
@@ -67,21 +86,6 @@ public class Expr extends ASTNode {
         return null;
     }
 
-    private static ASTNode E_(ASTNode parent, PeekTokenIterator it, int k) throws ParserException {
-        Token token = it.peek();
-        String value = token.getValue();
-
-        if (table.get(k).indexOf(value) != -1) {
-            Expr expr = new Expr(parent, ASTNodeTypes.BINARY_EXPR, it.nextMatch(value));
-            expr.addChild(combine(parent, it,
-                    () -> E(parent, it, k),
-                    () -> E_(parent, it, k)
-            ));
-            return expr;
-        }
-        return null;
-    }
-
     private static ASTNode race(ExprHOF aFunc, ExprHOF bFunc, PeekTokenIterator it) throws ParserException {
         if (!it.hasNext()) {
             return null;
@@ -108,9 +112,5 @@ public class Expr extends ASTNode {
         expr.addChild(a);
         expr.addChild(b.getChild(0));
         return expr;
-    }
-
-    public static ASTNode parse(PeekTokenIterator it) throws ParserException {
-        return E(null, it, 0);
     }
 }
