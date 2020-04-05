@@ -16,15 +16,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class StmtTest {
     private PeekTokenIterator createTokenIt(String src) throws LexicalException {
         Lexer lexer = new Lexer();
-        ArrayList<Token> tokens = lexer.analyse(src.chars().mapToObj(c -> (char)c));
+        ArrayList<Token> tokens = lexer.analyse(src.chars().mapToObj(c -> (char) c));
         return new PeekTokenIterator(tokens.stream());
     }
+
     @Test
     public void test_declareStmtParse() throws LexicalException, ParserException {
         PeekTokenIterator it = createTokenIt("var i = 100 * 2");
         ASTNode stmt = DeclareStmt.parse(null, it);
         assertEquals("i 100 2 * =", ParserUtils.toPostfixExpression(stmt));
     }
+
     @Test
     public void test_assignStmtParse() throws LexicalException, ParserException {
         PeekTokenIterator it = createTokenIt("i = 100 * 2");
@@ -38,12 +40,36 @@ public class StmtTest {
                 " a = 1 \n" +
                 "}"
         );
-        IfStmt stmt = (IfStmt)IfStmt.parse(null, it);
-        Variable expr = (Variable)stmt.getChild(0);
-        Block block = (Block)stmt.getChild(1);
-        AssignStmt assignStmt = (AssignStmt)block.getChild(0);
+        IfStmt stmt = (IfStmt) IfStmt.parse(null, it);
+        Variable expr = (Variable) stmt.getChild(0);
+        Block block = (Block) stmt.getChild(1);
+        AssignStmt assignStmt = (AssignStmt) block.getChild(0);
 
         assertEquals("a", expr.getLexeme().getValue());
         assertEquals("=", assignStmt.getLexeme().getValue());
+    }
+
+    @Test
+    public void test_ifElseStmtParse() throws LexicalException, ParserException {
+        PeekTokenIterator it = createTokenIt("if (a) {\n" +
+                " a = 1 \n" +
+                "} else { \n" +
+                "a = 2\n" +
+                "a = a * 3 \n" +
+                "}"
+        );
+        IfStmt stmt = (IfStmt) IfStmt.parse(null, it);
+        Variable expr = (Variable) stmt.getChild(0);
+        Block block = (Block) stmt.getChild(1);
+        AssignStmt assignStmt = (AssignStmt) block.getChild(0);
+        Block elseBlock = (Block) stmt.getChild(2);
+        AssignStmt elseAssignStmt1 = (AssignStmt) elseBlock.getChild(0);
+        AssignStmt elseAssignStmt2 = (AssignStmt) elseBlock.getChild(1);
+
+
+        assertEquals("a", expr.getLexeme().getValue());
+        assertEquals("=", assignStmt.getLexeme().getValue());
+        assertEquals("=", elseAssignStmt1.getLexeme().getValue());
+        assertEquals(2, elseBlock.getChildren().size());
     }
 }
