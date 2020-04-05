@@ -334,4 +334,12 @@ public class Token {
     public boolean isOperator() {
         return _type == TokenType.OPERATOR;
     }
+
+    public boolean isType() {
+        return _value.equals("bool")
+                || _value.equals("int")
+                || _value.equals("float")
+                || _value.equals("string")
+                || _value.equals("void");
+    }
 }
