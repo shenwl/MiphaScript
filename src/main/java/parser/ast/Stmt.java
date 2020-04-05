@@ -12,7 +12,7 @@ public abstract class Stmt extends ASTNode {
     public static ASTNode parseStmt(ASTNode parent, PeekTokenIterator it) throws ParserException {
         // 解析语句需要往前看两个
         Token token = it.next();
-        Token lookahead = it.next();
+        Token lookahead = it.peek();
         it.putBack();
 
         if(token.isVariable() && lookahead.getValue().equals("=")) {

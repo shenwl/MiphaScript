@@ -4,9 +4,7 @@ import exceptions.LexicalException;
 import lexer.Lexer;
 import lexer.Token;
 import org.junit.jupiter.api.Test;
-import parser.ast.ASTNode;
-import parser.ast.AssignStmt;
-import parser.ast.DeclareStmt;
+import parser.ast.*;
 import parser.utils.ParserException;
 import parser.utils.ParserUtils;
 import parser.utils.PeekTokenIterator;
@@ -32,5 +30,20 @@ public class StmtTest {
         PeekTokenIterator it = createTokenIt("i = 100 * 2");
         ASTNode stmt = AssignStmt.parse(null, it);
         assertEquals("i 100 2 * =", ParserUtils.toPostfixExpression(stmt));
+    }
+
+    @Test
+    public void test_ifStmtParse() throws LexicalException, ParserException {
+        PeekTokenIterator it = createTokenIt("if (a) {\n" +
+                " a = 1 \n" +
+                "}"
+        );
+        IfStmt stmt = (IfStmt)IfStmt.parse(null, it);
+        Variable expr = (Variable)stmt.getChild(0);
+        Block block = (Block)stmt.getChild(1);
+        AssignStmt assignStmt = (AssignStmt)block.getChild(0);
+
+        assertEquals("a", expr.getLexeme().getValue());
+        assertEquals("=", assignStmt.getLexeme().getValue());
     }
 }
