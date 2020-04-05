@@ -11,6 +11,7 @@ public class ParserUtils {
         switch (node.getType()) {
             case BINARY_EXPR:
             case DECLARE_STMT:
+            case ASSIGN_STMT:
                 leftStr = toPostfixExpression(node.getChild(0));
                 rightStr = toPostfixExpression(node.getChild(1));
                 return leftStr + " " + rightStr + " " + node.getLexeme().getValue();
