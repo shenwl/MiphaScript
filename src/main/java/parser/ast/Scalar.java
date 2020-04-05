@@ -5,5 +5,6 @@ import lexer.Token;
 public class Scalar extends Factor {
     public Scalar(ASTNode parent, Token token) {
         super(parent, token);
+        this.type = ASTNodeTypes.SCALAR;
     }
 }
