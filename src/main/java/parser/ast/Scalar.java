@@ -3,8 +3,8 @@ package parser.ast;
 import lexer.Token;
 
 public class Scalar extends Factor {
-    public Scalar(ASTNode parent, Token token) {
-        super(parent, token);
+    public Scalar(Token token) {
+        super(token);
         this.type = ASTNodeTypes.SCALAR;
     }
 }

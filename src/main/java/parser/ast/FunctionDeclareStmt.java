@@ -6,24 +6,24 @@ import parser.utils.ParserException;
 import parser.utils.PeekTokenIterator;
 
 public class FunctionDeclareStmt extends Stmt {
-    public FunctionDeclareStmt(ASTNode parent) {
-        super(parent, ASTNodeTypes.FUNCTION_DECLARE_STMT, "function");
+    public FunctionDeclareStmt() {
+        super(ASTNodeTypes.FUNCTION_DECLARE_STMT, "function");
     }
 
-    public static ASTNode parse(ASTNode parent, PeekTokenIterator it) throws ParserException {
+    public static ASTNode parse(PeekTokenIterator it) throws ParserException {
         it.nextMatch("func");
 
-        FunctionDeclareStmt func = new FunctionDeclareStmt(parent);
+        FunctionDeclareStmt func = new FunctionDeclareStmt();
         Token lexeme = it.peek();
         // 解析函数名变量
-        Variable functionVariable = (Variable)Factor.parse(parent, it);
+        Variable functionVariable = (Variable)Factor.parse(it);
 
         func.setLexeme(lexeme);
         func.addChild(functionVariable);
 
         // 解析参数
         it.nextMatch("(");
-        ASTNode args = FunctionArgs.parse(parent, it);
+        ASTNode args = FunctionArgs.parse(it);
         it.nextMatch(") ");
 
         func.addChild(args);
@@ -35,7 +35,7 @@ public class FunctionDeclareStmt extends Stmt {
         }
         functionVariable.setTypeLexeme(keyword);
         // 解析函数体
-        ASTNode block = Block.parse(parent, it);
+        ASTNode block = Block.parse(it);
         func.addChild(block);
         return func;
     }

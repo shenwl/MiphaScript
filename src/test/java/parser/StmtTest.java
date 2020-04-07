@@ -24,14 +24,14 @@ public class StmtTest {
     @Test
     public void test_declareStmtParse() throws LexicalException, ParserException {
         PeekTokenIterator it = createTokenIt("var i = 100 * 2");
-        ASTNode stmt = DeclareStmt.parse(null, it);
+        ASTNode stmt = DeclareStmt.parse( it);
         assertEquals("i 100 2 * =", ParserUtils.toPostfixExpression(stmt));
     }
 
     @Test
     public void test_assignStmtParse() throws LexicalException, ParserException {
         PeekTokenIterator it = createTokenIt("i = 100 * 2");
-        ASTNode stmt = AssignStmt.parse(null, it);
+        ASTNode stmt = AssignStmt.parse(it);
         assertEquals("i 100 2 * =", ParserUtils.toPostfixExpression(stmt));
     }
 
@@ -41,7 +41,7 @@ public class StmtTest {
                 " a = 1 \n" +
                 "}"
         );
-        IfStmt stmt = (IfStmt) IfStmt.parse(null, it);
+        IfStmt stmt = (IfStmt) IfStmt.parse(it);
         Variable expr = (Variable) stmt.getChild(0);
         Block block = (Block) stmt.getChild(1);
         AssignStmt assignStmt = (AssignStmt) block.getChild(0);
@@ -59,7 +59,7 @@ public class StmtTest {
                 "a = a * 3 \n" +
                 "}"
         );
-        IfStmt stmt = (IfStmt) IfStmt.parse(null, it);
+        IfStmt stmt = (IfStmt) IfStmt.parse(it);
         Variable expr = (Variable) stmt.getChild(0);
         Block block = (Block) stmt.getChild(1);
         AssignStmt assignStmt = (AssignStmt) block.getChild(0);

@@ -17,12 +17,12 @@ public abstract class ASTNode {
     // 类型
     protected Token typeLexeme;
 
-    public ASTNode(ASTNode parent) {
-        this.parent = parent;
+    public ASTNode() {
+        this.parent = null;
     }
 
-    public ASTNode(ASTNode parent,  ASTNodeTypes type, String label) {
-        this.parent = parent;
+    public ASTNode(ASTNodeTypes type, String label) {
+        this.parent = null;
         this.type = type;
         this.label = label;
     }
@@ -32,6 +32,7 @@ public abstract class ASTNode {
     }
 
     public void addChild(ASTNode child) {
+        child.parent= this;
         children.add(child);
     }
 

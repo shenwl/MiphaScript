@@ -12,8 +12,8 @@ public class SimpleParser {
     // digit: 0|1|2|...|9
     public static ASTNode parse(PeekTokenIterator it) throws ParserException {
 
-        Expr expr = new Expr(null);
-        Scalar scalar = new Scalar(expr, it.next());
+        Expr expr = new Expr();
+        Scalar scalar = new Scalar(it.next());
 
         // base condition
         if(!it.hasNext()) {

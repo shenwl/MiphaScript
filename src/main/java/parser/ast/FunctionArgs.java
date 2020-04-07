@@ -5,17 +5,17 @@ import parser.utils.ParserException;
 import parser.utils.PeekTokenIterator;
 
 public class FunctionArgs extends ASTNode {
-    public FunctionArgs(ASTNode parent) {
-        super(parent);
+    public FunctionArgs() {
+        super();
         this.label = "args";
     }
 
-    public static ASTNode parse(ASTNode parent, PeekTokenIterator it) throws ParserException {
-        ASTNode args = new FunctionArgs(parent);
+    public static ASTNode parse(PeekTokenIterator it) throws ParserException {
+        ASTNode args = new FunctionArgs();
 
         while(it.peek().isType()){
             Token type = it.next();
-            Variable variable = (Variable)Factor.parse(parent, it);
+            Variable variable = (Variable)Factor.parse(it);
             variable.setTypeLexeme(type);
             args.addChild(variable);
 
