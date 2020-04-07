@@ -7,7 +7,7 @@ import parser.utils.PeekTokenIterator;
 
 public class FunctionDeclareStmt extends Stmt {
     public FunctionDeclareStmt() {
-        super(ASTNodeTypes.FUNCTION_DECLARE_STMT, "function");
+        super(ASTNodeTypes.FUNCTION_DECLARE_STMT, "func");
     }
 
     public static ASTNode parse(PeekTokenIterator it) throws ParserException {
