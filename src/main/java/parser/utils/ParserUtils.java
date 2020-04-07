@@ -1,6 +1,6 @@
 package parser.utils;
 
-import com.sun.deploy.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import parser.ast.ASTNode;
 
 import java.util.ArrayList;
