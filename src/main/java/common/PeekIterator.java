@@ -7,22 +7,23 @@ import java.util.stream.Stream;
 public class PeekIterator<T> implements Iterator<T> {
     private final static int CACHE_SIZE = 10;
     private Iterator<T> iterator;
-    private LinkedList<T> queueCache;
-    private LinkedList<T> stackPutBack;
+    private LinkedList<T> queueCache = new LinkedList<>();;
+    private LinkedList<T> stackPutBack = new LinkedList<>();;
 
     private T _endToken = null;
 
     public PeekIterator(Stream<T> stream) {
         iterator = stream.iterator();
-        queueCache = new LinkedList<>();
-        stackPutBack = new LinkedList<>();
     }
 
     public PeekIterator(Stream<T> stream, T endToken) {
         _endToken = endToken;
         iterator = stream.iterator();
-        queueCache = new LinkedList<>();
-        stackPutBack = new LinkedList<>();
+    }
+
+    public PeekIterator(Iterator<T> it, T endToken) {
+        _endToken = endToken;
+        iterator = it;
     }
 
     public T peek() {
