@@ -38,11 +38,15 @@ public class Expr extends ASTNode {
     }
 
     // 解析因子
-    private static ASTNode F(PeekTokenIterator it) {
+    private static ASTNode F(PeekTokenIterator it) throws ParserException {
         ASTNode factor = Factor.parse(it);
 
         if (factor == null) {
             return null;
+        }
+        // 如果是函数调用，则返回CallExpr
+        if(it.hasNext() && it.peek().getValue().equals("(")) {
+            return CallExpr.parse(factor, it);
         }
         return factor;
     }

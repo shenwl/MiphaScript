@@ -12,5 +12,6 @@ public enum ASTNodeTypes {
     ASSIGN_STMT,            // 赋值语句
     DECLARE_STMT,
     FUNCTION_DECLARE_STMT,  // 函数定义语句
-    RETURN_STMT,
+    RETURN_STMT,            // 返回语句
+    CALL_EXPR,              // 函数调用语句
 }
