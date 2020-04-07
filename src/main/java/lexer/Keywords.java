@@ -15,6 +15,12 @@ public class Keywords {
             "break",
             "func",
             "return",
+            // 类型
+            "int",
+            "float",
+            "string",
+            "boolean",
+            "void",
     };
 
     static Set<String> set = new HashSet<>(Arrays.asList(keywords));
