@@ -1,3 +1,3 @@
-func sum(int a, int b): int {
+func sum(int a, int b) int {
     return a + b
 }
