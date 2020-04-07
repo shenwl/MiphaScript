@@ -12,6 +12,7 @@ import parser.utils.PeekTokenIterator;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StmtTest {
     private PeekTokenIterator createTokenIt(String src) throws LexicalException {
@@ -72,4 +73,33 @@ public class StmtTest {
         assertEquals("=", elseAssignStmt1.getLexeme().getValue());
         assertEquals(2, elseBlock.getChildren().size());
     }
+
+//    @Test
+//    public void test_func() throws LexicalException, ParserException {
+//        ArrayList<Token> tokens = Lexer.fromFile("./example/function.ms");
+//        FunctionDeclareStmt functionStmt = (FunctionDeclareStmt) Stmt.parseStmt(null, new PeekTokenIterator(tokens.stream()));
+//
+//        // 验证参数
+//        FunctionArgs args = (FunctionArgs) functionStmt.getArgs();
+//        assertEquals("a", args.getChild(0).getLexeme().getValue());
+//        assertEquals("b", args.getChild(1).getLexeme().getValue());
+//        // 验证函数类型
+//        assertEquals("int", functionStmt.getFunctionType());
+//        // 函数声明变量
+//        Variable functionVariable = functionStmt.getFunctionVariable();
+//        assertEquals("sum", functionVariable.getLexeme().getValue());
+//
+//        Block block = functionStmt.getBlock();
+//        assertTrue(block.getChild(0) instanceof ReturnStmt);
+//    }
+//
+//    @Test
+//    public void test_recursionFunc() throws LexicalException, ParserException {
+//        ArrayList<Token> tokens = Lexer.fromFile("./example/recursion.ms");
+//        FunctionDeclareStmt functionStmt = (FunctionDeclareStmt) Stmt.parseStmt(null, new PeekTokenIterator(tokens.stream()));
+//
+//        assertEquals("func fact args block", ParserUtils.toBFSString(functionStmt, 4));
+//        assertEquals("args n", ParserUtils.toBFSString( functionStmt.getArgs(), 2));
+//        assertEquals("block if return", ParserUtils.toBFSString(functionStmt.getBlock(), 2));
+//    }
 }
