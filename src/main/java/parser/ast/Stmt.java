@@ -21,6 +21,15 @@ public abstract class Stmt extends ASTNode {
         if(token.getValue().equals("var")) {
             return DeclareStmt.parse(parent, it);
         }
+        if(token.getValue().equals("func")) {
+            return FunctionDeclareStmt.parse(parent, it);
+        }
+        if(token.getValue().equals("return")) {
+            return ReturnStmt.parse(parent, it);
+        }
+        if(token.getValue().equals("if")) {
+            return IfStmt.parse(parent, it);
+        }
         // TODO: 其他case
         return null;
     }
