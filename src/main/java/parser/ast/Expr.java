@@ -74,10 +74,7 @@ public class Expr extends ASTNode {
 
         if (table.get(k).indexOf(value) != -1) {
             Expr expr = new Expr(ASTNodeTypes.BINARY_EXPR, it.nextMatch(value));
-            expr.addChild(combine(it,
-                    () -> E(it, k),
-                    () -> E_(it, k)
-            ));
+            expr.addChild(combine(it, () -> E(it, k), () -> E_(it, k)));
             return expr;
         }
         return null;
