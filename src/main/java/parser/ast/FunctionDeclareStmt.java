@@ -24,7 +24,7 @@ public class FunctionDeclareStmt extends Stmt {
         // 解析参数
         it.nextMatch("(");
         ASTNode args = FunctionArgs.parse(it);
-        it.nextMatch(") ");
+        it.nextMatch(")");
 
         func.addChild(args);
 
