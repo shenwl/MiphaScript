@@ -95,13 +95,13 @@ public class StmtTest {
         assertTrue(block.getChild(0) instanceof ReturnStmt);
     }
 
-//    @Test
-//    public void test_recursionFunc() throws LexicalException, ParserException, FileNotFoundException, UnsupportedEncodingException {
-//        ArrayList<Token> tokens = Lexer.fromFile("./example/recursion.ms");
-//        FunctionDeclareStmt functionStmt = (FunctionDeclareStmt) Stmt.parseStmt(new PeekTokenIterator(tokens.stream()));
-//
-//        assertEquals("func fact args block", ParserUtils.toBFSString(functionStmt, 4));
-//        assertEquals("args n", ParserUtils.toBFSString( functionStmt.getArgs(), 2));
-//        assertEquals("block if return", ParserUtils.toBFSString(functionStmt.getBlock(), 2));
-//    }
+    @Test
+    public void test_recursionFunc() throws LexicalException, ParserException, FileNotFoundException, UnsupportedEncodingException {
+        ArrayList<Token> tokens = Lexer.fromFile("./example/recursion.ms");
+        FunctionDeclareStmt functionStmt = (FunctionDeclareStmt) Stmt.parseStmt(new PeekTokenIterator(tokens.stream()));
+
+        assertEquals("func fact args block", ParserUtils.toBFSString(functionStmt, 4));
+        assertEquals("args n", ParserUtils.toBFSString( functionStmt.getArgs(), 2));
+        assertEquals("block if return", ParserUtils.toBFSString(functionStmt.getBlock(), 3));
+    }
 }
