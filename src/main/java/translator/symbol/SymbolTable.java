@@ -2,7 +2,6 @@ package translator.symbol;
 
 import lexer.Token;
 import lexer.TokenType;
-import sun.jvm.hotspot.debugger.cdbg.Sym;
 
 import java.util.ArrayList;
 import java.util.Optional;
