@@ -4,7 +4,8 @@ import lexer.Token;
 import lexer.TokenType;
 
 import java.util.ArrayList;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SymbolTable {
     public SymbolTable parent = null;
@@ -26,11 +27,11 @@ public class SymbolTable {
     }
 
     public boolean exist(Token lexeme) {
-        Optional<Symbol> _symbol = this.symbols.stream()
-                .filter(item -> item.lexeme.getValue().equals(lexeme.getValue()))
-                .findFirst();
+        List<Symbol> matchSymbols = this.symbols.stream()
+                .filter(s -> s.lexeme.getValue().equals(lexeme.getValue()))
+                .collect(Collectors.toList());
 
-        if (_symbol.isPresent()) {
+        if (!matchSymbols.isEmpty()) {
             return true;
         }
 
@@ -50,12 +51,12 @@ public class SymbolTable {
      * @return
      */
     public Symbol cloneFromSymbolTree(Token lexeme, int layoutOffset) {
-        Optional<Symbol> _symbol = this.symbols.stream()
-                .filter(item -> item.lexeme.getValue().equals(lexeme.getValue()))
-                .findFirst();
+        List<Symbol> matchSymbols = this.symbols.stream()
+                .filter(s -> s.lexeme.getValue().equals(lexeme.getValue()))
+                .collect(Collectors.toList());
 
-        if (_symbol.isPresent()) {
-            Symbol symbol = _symbol.get().copy();
+        if (!matchSymbols.isEmpty()) {
+            Symbol symbol = matchSymbols.get(0).copy();
             symbol.setLayerOffset(layoutOffset);
             return symbol;
         }
@@ -79,7 +80,7 @@ public class SymbolTable {
                 symbol = Symbol.createAddressSymbol(lexeme, this.offsetIndex++);
             }
         }
-
+        this.addSymbol(symbol);
         return symbol;
     }
 
