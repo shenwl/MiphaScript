@@ -4,6 +4,7 @@ import translator.symbol.Symbol;
 
 /**
  * 三地址指令
+ * https://www.yuque.com/shenwl/nr0tg4/kos1tx/edit
  */
 public class TAInstruction {
     private Object arg1;
