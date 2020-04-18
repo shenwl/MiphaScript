@@ -94,4 +94,16 @@ public class Symbol {
     public void setLayerOffset(int layerOffset) {
         this.layerOffset = layerOffset;
     }
+
+    @Override
+    public String toString() {
+        switch (type) {
+            case ADDRESS_SYMBOL:
+            case IMMEDIATE_SYMBOL:
+                return lexeme.getValue();
+            case LABEL_SYMBOL:
+                return label;
+        }
+        return "";
+    }
 }
