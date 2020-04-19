@@ -1,8 +1,10 @@
 package parser.ast;
 
 import lexer.Token;
+import translator.symbol.Symbol;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class ASTNode {
     /* 树 */
@@ -16,6 +18,8 @@ public abstract class ASTNode {
 
     // 类型
     protected Token typeLexeme;
+
+    private HashMap<String, Object> props = new HashMap<>();
 
     public ASTNode() {
         this.parent = null;
@@ -32,7 +36,7 @@ public abstract class ASTNode {
     }
 
     public void addChild(ASTNode child) {
-        child.parent= this;
+        child.parent = this;
         children.add(child);
     }
 
@@ -70,5 +74,20 @@ public abstract class ASTNode {
 
     public void setTypeLexeme(Token typeLexeme) {
         this.typeLexeme = typeLexeme;
+    }
+
+    public boolean isValueType() {
+        return type == ASTNodeTypes.VARIABLE || type == ASTNodeTypes.SCALAR;
+    }
+
+    public Object getProp(String key) {
+        if (!props.containsKey(key)) {
+            return null;
+        }
+        return props.get(key);
+    }
+
+    public void setProp(String key, Object value) {
+        props.put(key, value);
     }
 }
