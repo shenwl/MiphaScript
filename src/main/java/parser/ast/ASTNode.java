@@ -19,6 +19,7 @@ public abstract class ASTNode {
     // 类型
     protected Token typeLexeme;
 
+    // 属性加到props，避免往AST上无限添加属性
     private HashMap<String, Object> props = new HashMap<>();
 
     public ASTNode() {
