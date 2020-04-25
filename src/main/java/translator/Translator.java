@@ -1,14 +1,13 @@
 package translator;
 
 import lexer.Token;
+import lexer.TokenType;
 import org.apache.commons.lang3.NotImplementedException;
 import parser.ast.ASTNode;
 import parser.ast.ASTNodeTypes;
 import parser.utils.ParserException;
 import translator.symbol.Symbol;
 import translator.symbol.SymbolTable;
-
-import java.text.ParseException;
 
 public class Translator {
 
@@ -31,8 +30,35 @@ public class Translator {
             case DECLARE_STMT:
                 translateDeclareStmt(program, node, symbolTable);
                 return;
+            case BLOCK:
+                translateBlock(program, node, symbolTable);
+                return;
         }
         throw new NotImplementedException("Translator not impl for" + node.getType());
+    }
+
+    private void translateBlock(TAProgram program, ASTNode node, SymbolTable parent) throws ParserException {
+        SymbolTable symbolTable = new SymbolTable();
+        parent.addChild(symbolTable);
+
+        Symbol parentOffset = symbolTable.createVariable();
+        parentOffset.setLexeme(new Token(TokenType.INTEGER, parent.localSize() + ""));
+
+        // push record 压栈活动记录
+        TAInstruction pushRecord = new TAInstruction(TAInstructionType.SP, null, null, null, null);
+        program.add(pushRecord);
+
+        for(ASTNode stmt : node.getChildren()) {
+            translateStmt(program, stmt, symbolTable);
+        }
+
+        // 出栈活动记录
+        TAInstruction popRecord = new TAInstruction(TAInstructionType.SP, null, null, null, null);
+        program.add(popRecord);
+
+        // 栈指针的减少过程(在压栈)
+        pushRecord.setArg1(-parent.localSize());
+        popRecord.setArg1(parent.localSize());
     }
 
     private void translateAssignStmt(TAProgram program, ASTNode node, SymbolTable symbolTable) {
