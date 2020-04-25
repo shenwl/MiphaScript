@@ -11,27 +11,28 @@ public abstract class Stmt extends ASTNode {
 
     public static ASTNode parseStmt(PeekTokenIterator it) throws ParserException {
         // 解析语句需要往前看两个
+        if (!it.hasNext()) return null;
         Token token = it.next();
         Token lookahead = it.peek();
         it.putBack();
 
 
-        if(token.isVariable() && lookahead != null && lookahead.getValue().equals("=")) {
+        if (token.isVariable() && lookahead != null && lookahead.getValue().equals("=")) {
             return AssignStmt.parse(it);
         }
-        if(token.getValue().equals("var")) {
+        if (token.getValue().equals("var")) {
             return DeclareStmt.parse(it);
         }
-        if(token.getValue().equals("func")) {
+        if (token.getValue().equals("func")) {
             return FunctionDeclareStmt.parse(it);
         }
-        if(token.getValue().equals("return")) {
+        if (token.getValue().equals("return")) {
             return ReturnStmt.parse(it);
         }
-        if(token.getValue().equals("if")) {
+        if (token.getValue().equals("if")) {
             return IfStmt.parse(it);
         }
-        if(token.getValue().equals("{")) {
+        if (token.getValue().equals("{")) {
             return Block.parse(it);
         }
         return null;
