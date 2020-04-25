@@ -30,7 +30,9 @@ public abstract class Stmt extends ASTNode {
         if(token.getValue().equals("if")) {
             return IfStmt.parse(it);
         }
-        // TODO: 其他case
+        if(token.getValue().equals("{")) {
+            return Block.parse(it);
+        }
         return null;
     }
 }
