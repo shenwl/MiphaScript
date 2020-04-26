@@ -26,12 +26,13 @@ public class BlockTest {
         System.out.println(program.toString());
 
         assertEquals(program.toString(), "a = 1\n" +
-                "\n" +
+                "SP -1\n" +
                 "p1 = a * 100\n" +
                 "b = p1\n" +
-                "\n" +
-                "\n" +
+                "SP 1\n" +
+                "SP -1\n" +
                 "p1 = a * 100\n" +
-                "b = p1\n");
+                "b = p1\n" +
+                "SP 1");
     }
 }
