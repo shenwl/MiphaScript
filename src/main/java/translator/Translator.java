@@ -57,7 +57,7 @@ public class Translator {
             gotoInstruction = new TAInstruction(TAInstructionType.GOTO, null, null, null, null);
             program.add(gotoInstruction);
             TAInstruction labelEndIf = program.addLabel();
-            ifInstruction.setArg2(labelEndIf);
+            ifInstruction.setArg2(labelEndIf.getArg1());
         }
         if (ifStmt.getElseBlock() != null) {
             translateBlock(program, ifStmt.getElseBlock(), symbolTable);
