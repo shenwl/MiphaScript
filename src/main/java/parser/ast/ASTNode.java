@@ -33,6 +33,9 @@ public abstract class ASTNode {
     }
 
     public ASTNode getChild(int index) {
+        if (index >= children.size()) {
+            return null;
+        }
         return children.get(index);
     }
 
