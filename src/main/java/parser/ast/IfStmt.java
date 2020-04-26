@@ -49,4 +49,28 @@ public class IfStmt extends Stmt {
             return null;
         }
     }
+
+    public ASTNode getExpr() {
+        return getChild(0);
+    }
+
+    public Block getBlock() {
+        return (Block) getChild(1);
+    }
+
+    public Block getElseBlock() {
+        ASTNode block = getChild(2);
+        if (block instanceof Block) {
+            return (Block) block;
+        }
+        return null;
+    }
+
+    public IfStmt getElseIfStmt() {
+        ASTNode ifStmt = getChild(2);
+        if (ifStmt instanceof IfStmt) {
+            return (IfStmt) ifStmt;
+        }
+        return null;
+    }
 }
