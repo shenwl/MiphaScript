@@ -5,6 +5,7 @@ import lexer.TokenType;
 import org.apache.commons.lang3.NotImplementedException;
 import parser.ast.ASTNode;
 import parser.ast.ASTNodeTypes;
+import parser.ast.IfStmt;
 import parser.utils.ParserException;
 import translator.symbol.Symbol;
 import translator.symbol.SymbolTable;
@@ -30,11 +31,47 @@ public class Translator {
             case DECLARE_STMT:
                 translateDeclareStmt(program, node, symbolTable);
                 return;
+            case IF_STMT:
+                translateIfStmt(program, node, symbolTable);
+                return;
             case BLOCK:
                 translateBlock(program, node, symbolTable);
                 return;
         }
         throw new NotImplementedException("Translator not impl for" + node.getType());
+    }
+
+    private void translateIfStmt(TAProgram program, ASTNode node, SymbolTable symbolTable) throws ParserException {
+        IfStmt ifStmt = (IfStmt) node;
+        ASTNode expr = ifStmt.getExpr();
+        Symbol exprAddr = translateExpr(program, expr, symbolTable);
+        TAInstruction ifInstruction = new TAInstruction(TAInstructionType.IF, null, null, exprAddr, null);
+
+        program.add(ifInstruction);
+
+        translateBlock(program, ifStmt.getBlock(), symbolTable);
+
+        // if(expr) {...} else if {...}
+        TAInstruction gotoInstruction = null;
+        if (node.getChild(2) != null) {
+            gotoInstruction = new TAInstruction(TAInstructionType.GOTO, null, null, null, null);
+            program.add(gotoInstruction);
+            TAInstruction labelEndIf = program.addLabel();
+            ifInstruction.setArg2(labelEndIf);
+        }
+        if (ifStmt.getElseBlock() != null) {
+            translateBlock(program, ifStmt.getElseBlock(), symbolTable);
+        } else if (ifStmt.getElseIfStmt() != null) {
+            translateIfStmt(program, ifStmt.getElseIfStmt(), symbolTable);
+        }
+
+        TAInstruction labelEnd = program.addLabel();
+
+        if (node.getChild(2) == null) {
+            ifInstruction.setArg2(labelEnd.getArg1());
+        } else {
+            gotoInstruction.setArg1(labelEnd.getArg1());
+        }
     }
 
     private void translateBlock(TAProgram program, ASTNode node, SymbolTable parent) throws ParserException {
@@ -48,7 +85,7 @@ public class Translator {
         TAInstruction pushRecord = new TAInstruction(TAInstructionType.SP, null, null, null, null);
         program.add(pushRecord);
 
-        for(ASTNode stmt : node.getChildren()) {
+        for (ASTNode stmt : node.getChildren()) {
             translateStmt(program, stmt, symbolTable);
         }
 
