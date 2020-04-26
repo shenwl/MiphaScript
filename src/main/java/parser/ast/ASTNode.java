@@ -1,7 +1,6 @@
 package parser.ast;
 
 import lexer.Token;
-import translator.symbol.Symbol;
 
 import java.util.ArrayList;
 import java.util.HashMap;

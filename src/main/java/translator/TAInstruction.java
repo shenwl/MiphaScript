@@ -81,6 +81,8 @@ public class TAInstruction {
                 return "RETURN " + arg1;
             case PARAM:
                 return "PARAM " + arg1 + " " + arg2;
+            case SP:
+                return "SP " + arg1;
             case CALL:
                 // 此时arg1为Label类型Symbol
                 return "CALL " + arg1;
