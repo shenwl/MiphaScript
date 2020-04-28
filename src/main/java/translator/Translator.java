@@ -5,6 +5,7 @@ import lexer.TokenType;
 import org.apache.commons.lang3.NotImplementedException;
 import parser.ast.ASTNode;
 import parser.ast.ASTNodeTypes;
+import parser.ast.FunctionDeclareStmt;
 import parser.ast.IfStmt;
 import parser.utils.ParserException;
 import translator.symbol.Symbol;
@@ -37,8 +38,69 @@ public class Translator {
             case BLOCK:
                 translateBlock(program, node, symbolTable);
                 return;
+            case FUNCTION_DECLARE_STMT:
+                translateFunctionDeclareStmt(program, node, symbolTable);
+                return;
+            case RETURN_STMT:
+                translateReturnStmt(program, node, symbolTable);
+                return;
+            case CALL_EXPR:
+                translateCallExpr(program, node, symbolTable);
+                return;
         }
         throw new NotImplementedException("Translator not impl for" + node.getType());
+    }
+
+    private void translateReturnStmt(TAProgram program, ASTNode node, SymbolTable symbolTable) {
+        Symbol returnValue = null;
+        if (node.getChild(0) != null) {
+            returnValue = translateExpr(program, node.getChild(0), symbolTable);
+        }
+        program.add(new TAInstruction(TAInstructionType.RETURN, null, null, returnValue, null));
+    }
+
+    private Symbol translateCallExpr(TAProgram program, ASTNode node, SymbolTable symbolTable) {
+        // 函数名称 foo()
+        ASTNode factor = node.getChild(0);
+        // foo -> symbol(foo) L0
+        // 返回值属于调用的活动记录
+        Symbol returnValue = symbolTable.createVariable();
+        // 作为返回地址
+        symbolTable.createVariable();
+
+        for (int i = 1; i < node.getChildren().size(); i++) {
+            ASTNode expr = node.getChild(i);
+            Symbol addr = translateExpr(program, expr, symbolTable);
+            program.add(new TAInstruction(TAInstructionType.PARAM, null, null, addr, i - 1));
+        }
+
+        Symbol funcAddr = symbolTable.cloneFromSymbolTree(factor.getLexeme(), 0);
+
+        // 栈指针的改变与调用完后的还原（函数内自己还有其他变量）
+        program.add(new TAInstruction(TAInstructionType.SP, null, null, -symbolTable.localSize(), null));
+        program.add(new TAInstruction(TAInstructionType.CALL, null, null, funcAddr, null));
+        program.add(new TAInstruction(TAInstructionType.SP, null, null, symbolTable.localSize(), null));
+
+        return returnValue;
+    }
+
+    private void translateFunctionDeclareStmt(TAProgram program, ASTNode node, SymbolTable parent) throws ParserException {
+        TAInstruction label = program.addLabel();
+        FunctionDeclareStmt func = (FunctionDeclareStmt) node;
+
+        SymbolTable symbolTable = new SymbolTable();
+
+        symbolTable.createLabel((String) label.getArg1(), node.getLexeme());
+        label.setArg2(node.getLexeme());
+        // 参数处理
+        for (ASTNode arg : func.getArgs().getChildren()) {
+            symbolTable.createSymbolByLexeme(arg.getLexeme());
+        }
+        // block处理
+        for (ASTNode block : func.getBlock().getChildren()) {
+            translateStmt(program, block, symbolTable);
+        }
+        parent.addChild(symbolTable);
     }
 
     private void translateIfStmt(TAProgram program, ASTNode node, SymbolTable symbolTable) throws ParserException {
@@ -143,7 +205,9 @@ public class Translator {
             return temp;
         }
         if (node.getType() == ASTNodeTypes.CALL_EXPR) {
-            throw new NotImplementedException("CALL_EXPR not impl");
+            Symbol temp = translateCallExpr(program, node, symbolTable);
+            node.setProp("temp", temp);
+            return temp;
         }
         for (ASTNode child : node.getChildren()) {
             translateExpr(program, child, symbolTable);
