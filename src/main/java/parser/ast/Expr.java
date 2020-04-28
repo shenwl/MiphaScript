@@ -21,7 +21,7 @@ public class Expr extends ASTNode {
     }
 
     // 左递归：E(k) -> E(k) op(k) E(k+1) | E(k+1)
-    // 又递归：E(k) -> E(k+1) E_(k)  // Expr e = new Expr; e.left = E(k+1); e.op = op(k); e.right = E(k+1) E_(k)
+    // 右递归：E(k) -> E(k+1) E_(k)  // Expr e = new Expr; e.left = E(k+1); e.op = op(k); e.right = E(k+1) E_(k)
     //       E_(k) -> op(k) E(k+1) E_(k) | ε
     private static ASTNode E(PeekTokenIterator it, int k) throws ParserException {
         if (k < table.size() - 1) {
