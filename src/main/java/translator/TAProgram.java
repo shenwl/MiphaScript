@@ -15,7 +15,12 @@ public class TAProgram {
     private ArrayList<TAInstruction> instructions = new ArrayList<>();
     // 在一个程序中有很多label，这里是为了分配数字
     private int labelCounter = 0;
+
     private StaticSymbolTable staticSymbolTable = new StaticSymbolTable();
+
+    public StaticSymbolTable getStaticSymbolTable() {
+        return staticSymbolTable;
+    }
 
     public void add(TAInstruction code) {
         instructions.add(code);

@@ -30,4 +30,8 @@ public class StaticSymbolTable {
     public int size() {
         return this.symbols.size();
     }
+
+    public ArrayList<Symbol> getSymbols() {
+        return symbols;
+    }
 }
