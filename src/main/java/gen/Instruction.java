@@ -1,8 +1,6 @@
 package gen;
 
-import gen.operand.Offset;
-import gen.operand.Operand;
-import gen.operand.Register;
+import gen.operand.*;
 import org.apache.commons.lang3.NotImplementedException;
 import translator.symbol.Symbol;
 import translator.symbol.SymbolType;
@@ -21,14 +19,17 @@ public class Instruction {
         this.code = code;
     }
 
+    public OpCode getOpCode() {
+        return code;
+    }
+
     public static Instruction jump(OpCode code, int offset) {
         Instruction i = new Instruction(code);
         i.opList.add(new Offset(offset));
         return i;
     }
 
-
-    private static Instruction offsetInstruction(
+    public static Instruction offsetInstruction(
             OpCode opCode,
             Register r1,
             Register r2,
@@ -68,5 +69,64 @@ public class Instruction {
             i.opList.add(c);
         }
         return i;
+    }
+
+    public static Instruction immediate(OpCode opCode, Register r, ImmediateNumber number) {
+        Instruction i = new Instruction(opCode);
+        i.opList.add(r);
+        i.opList.add(number);
+        return i;
+    }
+
+    public static Instruction bne(Register a, Register b, String label) {
+        Instruction i = new Instruction(OpCode.BNE);
+        i.opList.add(a);
+        i.opList.add(b);
+        i.opList.add(new Label(label));
+        return i;
+    }
+
+    /**
+     * TODO：包含太多位运算，逻辑不太清晰
+     */
+    public Integer toByteCode() {
+        int code = 0;
+        int x = this.code.getValue();
+        code |= x << 26;
+        switch (this.code.getType()) {
+            case IMMEDIATE: {
+                Register r0 = (Register) this.opList.get(0);
+
+                code |= r0.getAddr() << 21;
+                code |= ((ImmediateNumber) this.opList.get(1)).getValue();
+                return code;
+            }
+            case REGISTER: {
+                Register r1 = (Register) this.opList.get(0);
+                code |= r1.getAddr() << 21;
+                if (this.opList.size() > 1) {
+                    code |= ((Register) this.opList.get(1)).getAddr() << 16;
+                    if (this.opList.size() > 2) {
+                        int r2 = ((Register) this.opList.get(2)).getAddr();
+                        code |= r2 << 11;
+                    }
+                }
+                break;
+            }
+            case JUMP:
+                if (this.opList.size() > 0) {
+                    code |= ((Offset) this.opList.get(0)).getEncodedOffset();
+                }
+                break;
+            case OFFSET:
+                Register r1 = (Register) this.opList.get(0);
+                Register r2 = (Register) this.opList.get(1);
+                Offset offset = (Offset) this.opList.get(2);
+                code |= r1.getAddr() << 21;
+                code |= r2.getAddr() << 16;
+                code |= offset.getEncodedOffset();
+                break;
+        }
+        return code;
     }
 }
