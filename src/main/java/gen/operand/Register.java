@@ -1,6 +1,6 @@
 package gen.operand;
 
-import com.sun.tools.internal.ws.processor.generator.GeneratorException;
+import exceptions.GeneratorException;
 
 /**
  * 寄存器
