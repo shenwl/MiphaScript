@@ -21,6 +21,21 @@ public class Translator {
             translateStmt(program, child, symbolTable);
         }
 
+        program.setStaticSymbols(symbolTable);
+
+        Token main = new Token(TokenType.VARIABLE, "main");
+
+        if(symbolTable.exist(main)) {
+            symbolTable.createVariable(); // 返回值
+            program.add(new TAInstruction(TAInstructionType.SP, null, null,
+                    -symbolTable.localSize(), null));
+            program.add(new TAInstruction(
+                    TAInstructionType.CALL, null, null,
+                    symbolTable.cloneFromSymbolTree(main, 0),null ));
+            program.add(new TAInstruction(TAInstructionType.SP, null, null,
+                    symbolTable.localSize(), null));
+        }
+
         return program;
     }
 
