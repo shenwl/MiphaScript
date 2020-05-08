@@ -22,6 +22,7 @@ public class TransFuncTest {
 //        System.out.println(program.toString());
 
         String expected = "L0:\n" +
+                "FUNC_BEGIN\n" +
                 "p0 = a + b\n" +
                 "RETURN p0";
         assertEquals(program.toString(), expected);
@@ -36,6 +37,7 @@ public class TransFuncTest {
 //        System.out.println(program.toString());
 
         String expected = "L0:\n" +
+                "FUNC_BEGIN\n" +
                 "p0 = n <= 0\n" +
                 "IF p0 ELSE L1\n" +
                 "SP -2\n" +
