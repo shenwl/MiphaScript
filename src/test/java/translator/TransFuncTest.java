@@ -23,8 +23,8 @@ public class TransFuncTest {
 
         String expected = "L0:\n" +
                 "FUNC_BEGIN\n" +
-                "p0 = a + b\n" +
-                "RETURN p0";
+                "p1 = a + b\n" +
+                "RETURN p1";
         assertEquals(program.toString(), expected);
     }
 
@@ -38,19 +38,19 @@ public class TransFuncTest {
 
         String expected = "L0:\n" +
                 "FUNC_BEGIN\n" +
-                "p0 = n <= 0\n" +
-                "IF p0 ELSE L1\n" +
-                "SP -2\n" +
+                "p1 = n <= 0\n" +
+                "IF p1 ELSE L1\n" +
+                "SP -3\n" +
                 "RETURN 1\n" +
-                "SP 2\n" +
+                "SP 3\n" +
                 "L1:\n" +
-                "p3 = n - 1\n" +
-                "PARAM p3 0\n" +
-                "SP -5\n" +
-                "CALL L0\n" +
-                "SP 5\n" +
-                "p4 = p1 * n\n" +
-                "RETURN p4";
+                "p4 = n - 1\n" +
+                "PARAM p4 0\n" +
+                "SP -6\n" +
+                "CALL null\n" +
+                "SP 6\n" +
+                "p5 = p2 * n\n" +
+                "RETURN p5";
 
         assertEquals(program.toString(), expected);
     }
