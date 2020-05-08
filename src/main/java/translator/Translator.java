@@ -90,8 +90,13 @@ public class Translator {
 
         SymbolTable symbolTable = new SymbolTable();
 
-        symbolTable.createLabel((String) label.getArg1(), node.getLexeme());
+        program.add(new TAInstruction(TAInstructionType.FUNC_BEGIN, null, null, null, null));
+        symbolTable.createVariable(); // 返回地址
+
         label.setArg2(node.getLexeme());
+
+        parent.createLabel((String) label.getArg1(), node.getLexeme());
+
         // 参数处理
         for (ASTNode arg : func.getArgs().getChildren()) {
             symbolTable.createSymbolByLexeme(arg.getLexeme());

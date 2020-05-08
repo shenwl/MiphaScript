@@ -77,6 +77,8 @@ public class TAInstruction {
                 return String.format("GOTO %s", arg1);
             case LABEL:
                 return arg1 + ":";
+            case FUNC_BEGIN:
+                return "FUNC_BEGIN";
             case RETURN:
                 // 此时arg1为Symbol，Symbol有toString
                 return "RETURN " + arg1;

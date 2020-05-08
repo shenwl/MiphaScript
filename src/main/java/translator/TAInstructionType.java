@@ -12,4 +12,5 @@ public enum TAInstructionType {
     RETURN,
     SP,         // 维护栈指针
     PARAM,      // 传参
+    FUNC_BEGIN,
 }
