@@ -1,5 +1,6 @@
 package translator;
 
+import gen.Instruction;
 import translator.symbol.Symbol;
 
 /**
