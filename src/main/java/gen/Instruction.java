@@ -2,6 +2,7 @@ package gen;
 
 import gen.operand.*;
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
 import translator.symbol.Symbol;
 import translator.symbol.SymbolType;
 
@@ -128,5 +129,16 @@ public class Instruction {
                 break;
         }
         return code;
+    }
+
+    @Override
+    public String toString() {
+        String s = this.code.toString();
+
+        ArrayList<String> parts = new ArrayList<>();
+        for(Operand op : this.opList) {
+            parts.add(op.toString());
+        }
+        return s + " " + StringUtils.join(parts, " ");
     }
 }
