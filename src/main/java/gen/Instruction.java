@@ -1,5 +1,6 @@
 package gen;
 
+import exceptions.GeneratorException;
 import gen.operand.*;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +11,12 @@ import java.util.ArrayList;
 
 public class Instruction {
     private static final int MASK_OPCODE = 0xfc000000;
+    private static final int MASK_R0 = 0x03e00000;
+    private static final int MASK_R1 = 0x001f0000;
+    private static final int MASK_R2 = 0x0000f800;
+    private static final int MASK_OFFSET0 = 0x03ffffff;
+    private static final int MASK_OFFSET1 = 0x001fffff;
+    private static final int MASK_OFFSET2 = 0x000007ff;
 
     // 操作码类型
     private OpCode code;
@@ -139,6 +146,65 @@ public class Instruction {
                 break;
         }
         return code;
+    }
+
+    /**
+     * 指令解码
+     */
+    public static Instruction fromByteCode(int code) throws GeneratorException {
+        // 与MASK_OPCODE & 操作后只剩最高6位，然后无符号右移26位拿到opcode
+        byte byteOpcode = (byte) ((code & MASK_OPCODE) >>> 26);
+        OpCode opcode = OpCode.fromByte(byteOpcode);
+        Instruction i = new Instruction(opcode);
+
+        switch (opcode.getType()) {
+            case IMMEDIATE: {
+                // 取出寄存器r0
+                int r = (code & MASK_R0) >>> 21;
+                int number = code & MASK_OFFSET1;
+                i.opList.add(Register.fromAddr(r));
+                i.opList.add(new ImmediateNumber(number));
+                break;
+            }
+            case REGISTER: {
+                int r1Addr = (code & MASK_R0) >> 21;
+                int r2Addr = (code & MASK_R1) >> 16;
+                int r3Addr = (code & MASK_R2) >> 11;
+
+                Register r1 = Register.fromAddr(r1Addr);
+                Register r2 = null;
+                Register r3 = null;
+
+                i.opList.add(r1);
+
+                if(r2Addr != 0) {
+                    r2 = Register.fromAddr(r2Addr);
+                    i.opList.add(r2);
+                }
+                if(r3Addr != 0) {
+                    r3 = Register.fromAddr(r3Addr);
+                    i.opList.add(r3);
+                }
+                break;
+            }
+            case JUMP: {
+                int offset = code & MASK_OFFSET0;
+                i.opList.add(Offset.decodeOffset(offset));
+                break;
+            }
+            case OFFSET: {
+                int r1Addr = (code & MASK_R0) >> 21;
+                int r2Addr = (code & MASK_R1) >> 16;
+                int offset = code & MASK_OFFSET2;
+
+                i.opList.add(Register.fromAddr(r1Addr));
+                i.opList.add(Register.fromAddr(r2Addr));
+                i.opList.add(Offset.decodeOffset(offset));
+                break;
+            }
+        }
+
+        return i;
     }
 
     @Override
