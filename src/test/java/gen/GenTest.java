@@ -7,7 +7,6 @@ import parser.ast.ASTNode;
 import parser.utils.ParserException;
 import translator.TAProgram;
 import translator.Translator;
-import translator.symbol.StaticSymbolTable;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
