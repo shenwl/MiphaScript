@@ -88,20 +88,29 @@ public class Instruction {
     }
 
     /**
-     * TODO：包含太多位运算，逻辑不太清晰
+     * 指令编码：指令转为整型
      */
     public Integer toByteCode() {
+        // code, 0为32位整型，拿这个去存指令
         int code = 0;
+        // opCode -> int
+        // 0x01
+        // 指令是一段一段的:
+        // |--opCode--|----|----|
         int x = this.code.getValue();
         code |= x << 26;
         switch (this.code.getType()) {
+            // |--code--|--r0--|--ImmediateNumber--|
             case IMMEDIATE: {
                 Register r0 = (Register) this.opList.get(0);
 
+                // 寄存器占5个位置
+                // 先左移再做or运算
                 code |= r0.getAddr() << 21;
                 code |= ((ImmediateNumber) this.opList.get(1)).getValue();
                 return code;
             }
+            // |--code--|--r1--|--r2--|
             case REGISTER: {
                 Register r1 = (Register) this.opList.get(0);
                 code |= r1.getAddr() << 21;
@@ -119,6 +128,7 @@ public class Instruction {
                     code |= ((Offset) this.opList.get(0)).getEncodedOffset();
                 }
                 break;
+            // ｜--code--|--r1--|--r2--|--offset--|
             case OFFSET:
                 Register r1 = (Register) this.opList.get(0);
                 Register r2 = (Register) this.opList.get(1);
